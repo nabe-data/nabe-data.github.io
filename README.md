@@ -1,4 +1,6 @@
 #test
 
+web、vscodeから同時変更
 vscodeから変更
-VScodeから変更
+
+webから変更

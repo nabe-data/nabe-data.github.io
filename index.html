@@ -10,42 +10,52 @@
     <header>
         <h1>My Learning Journey</h1>
     </header>
+
     <nav>
-        <ul>
-            <li><a href="#" id="allLink">すべて</a></li>
-            <li><a href="#" id="programmingLink">プログラミング</a></li>
-            <li><a href="#" id="dataLink">データサイエンス</a></li>
-            <li><a href="#" id="languageLink">言語学習</a></li>
+        <ul id="categoryNav" class="category-nav">
+            <!-- カテゴリナビゲーションはJavaScriptで動的に生成 -->
         </ul>
     </nav>
-    <div class="container">
-        <div class="article-grid" id="articleGrid"></div>
-    </div>
-    <script src="articles.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            displayArticleList('articleGrid');
 
-            const allLink = document.getElementById('allLink');
-            const programmingLink = document.getElementById('programmingLink');
-            const dataLink = document.getElementById('dataLink');
-            const languageLink = document.getElementById('languageLink');
+    <main class="container">
+        <section id="articleGrid" class="article-grid">
+            <!-- 記事一覧はJavaScriptで動的に生成 -->
+        </section>
+    </main>
 
-            function filterArticles(category) {
-                const articles = document.getElementsByClassName('article-card');
-                for (let article of articles) {
-                    if (category === 'all' || article.dataset.category === category) {
-                        article.parentElement.style.display = 'block';
+    <script type="module">
+        import CategoryManager from './categories.js';
+        import { displayArticleList } from './articles.js';
+
+        // カテゴリナビゲーションの生成
+        document.getElementById('categoryNav').innerHTML = CategoryManager.generateNavMenu();
+
+        // 記事一覧の表示
+        displayArticleList('articleGrid');
+
+        // カテゴリフィルタリングの設定
+        document.querySelectorAll('.category-link, #allLink').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const categoryId = e.target.id.replace('Link', '');
+                
+                // アクティブなカテゴリの表示を更新
+                document.querySelectorAll('.category-link, #allLink').forEach(l => 
+                    l.classList.remove('active'));
+                e.target.classList.add('active');
+
+                // 記事のフィルタリング
+                const articles = document.querySelectorAll('.article-card');
+                articles.forEach(article => {
+                    if (categoryId === 'all') {
+                        article.style.display = 'block';
                     } else {
-                        article.parentElement.style.display = 'none';
+                        const category = CategoryManager.getCategoryById(categoryId);
+                        article.style.display = 
+                            article.dataset.category === category.slug ? 'block' : 'none';
                     }
-                }
-            }
-
-            allLink.addEventListener('click', () => filterArticles('all'));
-            programmingLink.addEventListener('click', () => filterArticles('プログラミング'));
-            dataLink.addEventListener('click', () => filterArticles('データサイエンス'));
-            languageLink.addEventListener('click', () => filterArticles('言語学習'));
+                });
+            });
         });
     </script>
 </body>

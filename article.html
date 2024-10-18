@@ -4,43 +4,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>記事タイトル - My Learning Journey</title>
+    <title>記事詳細 - My Learning Journey</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <header>
         <h1>My Learning Journey</h1>
     </header>
+
     <nav>
-        <ul>
-            <li><a href="index.html">ホーム</a></li>
-            <li><a href="index.html#programming">プログラミング</a></li>
-            <li><a href="index.html#data">データサイエンス</a></li>
-            <li><a href="index.html#language">言語学習</a></li>
+        <ul id="categoryNav" class="category-nav">
+            <!-- カテゴリナビゲーションはJavaScriptで動的に生成 -->
         </ul>
     </nav>
-    <div class="container">
-        <article>
-            <div class="article-header">
-                <img id="articleImage" src="" alt="">
-                <h1 id="articleTitle">記事タイトル</h1>
+
+    <main class="container">
+        <article class="article-detail">
+            <header class="article-header">
+                <img id="articleImage" src="" alt="" class="article-main-image">
+                <h1 id="articleTitle" class="article-title"></h1>
                 <div class="article-meta">
-                    <span id="articleCategory">カテゴリー</span> | 
-                    <span id="articleReadTime">読了時間: 0分</span>
+                    <span id="articleCategory" class="category-tag"></span>
+                    <span id="articleReadTime" class="read-time"></span>
                 </div>
-            </div>
-            <div class="article-content" id="articleContent">
-                <!-- 記事の内容がここに入ります -->
+            </header>
+
+            <div id="articleContent" class="article-content">
+                <!-- 記事内容はJavaScriptで動的に生成 -->
             </div>
         </article>
-    </div>
-    <script src="articles.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const articleId = urlParams.get('id');
+    </main>
+
+    <script type="module">
+        import CategoryManager from './categories.js';
+        import { displayArticleDetail } from './articles.js';
+
+        // カテゴリナビゲーションの生成
+        document.getElementById('categoryNav').innerHTML = CategoryManager.generateNavMenu();
+
+        // URLからIDを取得して記事を表示
+        const urlParams = new URLSearchParams(window.location.search);
+        const articleId = urlParams.get('id');
+        if (articleId) {
             displayArticleDetail(articleId);
-        });
+        }
     </script>
 </body>
 </html>

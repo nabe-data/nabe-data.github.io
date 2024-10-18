@@ -1,9 +1,10 @@
-// articles.js
+import CategoryManager from './categories.js';
+
 const articles = [
     {
         id: 1,
         title: 'Reactフックの基本',
-        category: 'プログラミング',
+        categoryId: 'programming', // カテゴリIDを参照
         readTime: '5分',
         image: 'image/react-hooks.png',
         content: `
@@ -33,7 +34,7 @@ const value = useContext(MyContext);
     {
         id: 2,
         title: 'Python pandas入門',
-        category: 'データサイエンス',
+        categoryId: 'data',
         readTime: '7分',
         image: 'image/pandas-intro.png',
         content: `
@@ -59,7 +60,7 @@ print(df.describe())
     {
         id: 3,
         title: '効果的な英語学習法',
-        category: '言語学習',
+        categoryId: 'language',
         readTime: '6分',
         image: 'image/english-learning.jpg',
         content: `
@@ -82,16 +83,22 @@ print(df.describe())
 // 記事一覧を表示する関数
 function displayArticleList(containerId) {
     const container = document.getElementById(containerId);
+    container.innerHTML = ''; // コンテナをクリア
+
     articles.forEach(article => {
+        const category = CategoryManager.getCategoryById(article.categoryId);
         const articleElement = document.createElement('a');
         articleElement.href = `article.html?id=${article.id}`;
         articleElement.className = 'article-link';
         articleElement.innerHTML = `
-            <div class="article-card" data-category="${article.category.toLowerCase()}">
+            <div class="article-card" data-category="${category.slug}">
                 <img src="${article.image}" alt="${article.title}">
                 <h3>${article.title}</h3>
                 <p>${article.snippet}</p>
-                <span class="read-time">読了時間: ${article.readTime}</span>
+                <div class="article-meta">
+                    <span class="category-tag">${category.name}</span>
+                    <span class="read-time">読了時間: ${article.readTime}</span>
+                </div>
             </div>
         `;
         container.appendChild(articleElement);
@@ -102,9 +109,10 @@ function displayArticleList(containerId) {
 function displayArticleDetail(articleId) {
     const article = articles.find(a => a.id === parseInt(articleId));
     if (article) {
+        const category = CategoryManager.getCategoryById(article.categoryId);
         document.title = `${article.title} - My Learning Journey`;
         document.getElementById('articleTitle').textContent = article.title;
-        document.getElementById('articleCategory').textContent = article.category;
+        document.getElementById('articleCategory').textContent = category.name;
         document.getElementById('articleReadTime').textContent = `読了時間: ${article.readTime}`;
         document.getElementById('articleImage').src = article.image;
         document.getElementById('articleImage').alt = article.title;
@@ -114,3 +122,5 @@ function displayArticleDetail(articleId) {
         document.getElementById('articleContent').textContent = '申し訳ありませんが、指定された記事は存在しません。';
     }
 }
+
+export { articles, displayArticleList, displayArticleDetail };
